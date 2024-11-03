@@ -1,4 +1,5 @@
-﻿using M183.Controllers.Dto;
+﻿using Google.Authenticator;
+using M183.Controllers.Dto;
 using M183.Controllers.Helper;
 using M183.Data;
 using M183.Models;
@@ -52,6 +53,20 @@ namespace M183.Controllers
       {
         _logger.LogWarning($"User was unauthorized to log in, Credentials wrong.", DateTime.UtcNow);
         return Unauthorized("login failed");
+      }
+
+      if (user.SecretKey2FA != null)
+      {
+        _logger.LogInformation($"User uses 2FA {user.Username}", DateTime.UtcNow);
+        string secretKey = user.SecretKey2FA;
+        string userUniqueKey = user.Username + secretKey;
+        TwoFactorAuthenticator authenticator = new TwoFactorAuthenticator();
+        bool isAuthenticated = authenticator.ValidateTwoFactorPIN(userUniqueKey, request.UserKey);
+        if (!isAuthenticated)
+        {
+          _logger.LogWarning($"False 2FA key {user.Username}", DateTime.UtcNow);
+          return Unauthorized("login failed");
+        }
       }
 
       _logger.LogInformation($"User logged in {user.Username}", DateTime.UtcNow);

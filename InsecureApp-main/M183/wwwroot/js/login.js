@@ -3,6 +3,7 @@ var jwtId = 'EineTolleId'
 function onLogin() {
   var inputUsername = document.getElementById("username");
   var inputPassword = document.getElementById("password");
+  var input2FA = document.getElementById("twoFA");
 
   fetch("/api/Login", {
     method: "POST",
@@ -10,7 +11,7 @@ function onLogin() {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ Username: inputUsername.value, Password: inputPassword.value })
+    body: JSON.stringify({ Username: inputUsername.value, Password: inputPassword.value, UserKey: input2FA.value })
   })
     .then((response) => {
       if (response.ok) {
@@ -123,6 +124,19 @@ function createLoginForm() {
   divPassword.innerHTML += '<br>';
   divPassword.appendChild(inputPassword);
 
+  /* Google Authenticator */
+  var label2FA = document.createElement("label");
+  label2FA.innerText = "2FA (if enabled)";
+
+  var input2FA = document.createElement("input");
+  input2FA.id = "twoFA";
+
+  var div2FA = document.createElement("div");
+  div2FA.innerHTML += '<br>';
+  div2FA.appendChild(label2FA);
+  div2FA.innerHTML += '<br>';
+  div2FA.appendChild(input2FA);
+
   /* Result label */
   var labelResult = document.createElement("label");
   labelResult.innerText = "Login result";
@@ -146,6 +160,7 @@ function createLoginForm() {
   loginForm.action = "javascript:onLogin()";
   loginForm.appendChild(divUsername);
   loginForm.appendChild(divPassword);
+  loginForm.appendChild(div2FA);
   loginForm.appendChild(divResult);
   loginForm.appendChild(divButton);
 

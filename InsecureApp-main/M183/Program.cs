@@ -1,4 +1,5 @@
 using M183.Data;
+using M183.Services.UserService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -10,6 +11,9 @@ builder.Services.AddDbContext<NewsAppContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SongContext")));
 
 // Add services to the container.
+
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -41,6 +45,8 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -53,9 +59,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
 
 app.UseAuthentication();
 app.UseAuthorization();
