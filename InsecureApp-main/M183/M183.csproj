@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile>SwaggerAnnotation.xml</DocumentationFile>
+    <UserSecretsId>a72cdcf8-427e-4f6e-92c3-3d1a4cc27c38</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
