@@ -1,4 +1,5 @@
-﻿using M183.Controllers.Dto;
+﻿using Azure.Core;
+using M183.Controllers.Dto;
 using M183.Data;
 using M183.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -14,10 +15,12 @@ namespace M183.Controllers
   {
     private readonly TimeZoneInfo tzi = TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time");
     private readonly NewsAppContext _context;
+    private readonly ILogger<NewsController> _logger;
 
-    public NewsController(NewsAppContext context)
+    public NewsController(NewsAppContext context, ILogger<NewsController> logger)
     {
       _context = context;
+      _logger = logger;
     }
 
     private News SetTimezone(News news)
@@ -74,8 +77,12 @@ namespace M183.Controllers
     {
       if (request == null)
       {
+        _logger.LogWarning($"Empty request", DateTime.UtcNow);
         return BadRequest();
       }
+
+      _logger.LogInformation($"Attempt to create News by {request.AuthorId}", DateTime.UtcNow);
+
 
       var newNews = new News();
 
@@ -88,6 +95,7 @@ namespace M183.Controllers
       _context.News.Add(newNews);
       _context.SaveChanges();
 
+      _logger.LogInformation($"News created by {request.AuthorId}", DateTime.UtcNow);
       return CreatedAtAction(nameof(GetById), new { id = newNews.Id }, newNews);
     }
 
@@ -104,12 +112,14 @@ namespace M183.Controllers
     {
       if (request == null)
       {
+        _logger.LogWarning($"Empty request", DateTime.UtcNow);
         return BadRequest();
       }
 
       var news = _context.News.Find(id);
       if (news == null)
       {
+        _logger.LogInformation($"News not found. Attempted id {id}", DateTime.UtcNow);
         return NotFound(string.Format("News {0} not found", id));
       }
 
@@ -121,6 +131,7 @@ namespace M183.Controllers
       _context.News.Update(news);
       _context.SaveChanges();
 
+      _logger.LogInformation($"News updated by {request.AuthorId}", DateTime.UtcNow);
       return Ok();
     }
 
@@ -138,12 +149,14 @@ namespace M183.Controllers
       var news = _context.News.Find(id);
       if (news == null)
       {
+        _logger.LogInformation($"News not found. Attempted id {id}", DateTime.UtcNow);
         return NotFound(string.Format("News {0} not found", id));
       }
 
       _context.News.Remove(news);
       _context.SaveChanges();
 
+      _logger.LogInformation($"News deleted by {news.AuthorId}", DateTime.UtcNow);
       return Ok();
     }
   }

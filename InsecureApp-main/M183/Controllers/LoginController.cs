@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace M183.Controllers
 {
@@ -16,11 +17,13 @@ namespace M183.Controllers
   {
     private readonly IConfiguration _configuration;
     private readonly NewsAppContext _context;
+    private readonly ILogger<LoginController> _logger;
 
-    public LoginController(NewsAppContext context, IConfiguration configuration)
+    public LoginController(NewsAppContext context, IConfiguration configuration, ILogger<LoginController> logger)
     {
       _configuration = configuration;
       _context = context;
+      _logger = logger;
     }
 
     /// <summary>
@@ -37,6 +40,7 @@ namespace M183.Controllers
     {
       if (request == null || request.Username.IsNullOrEmpty() || request.Password.IsNullOrEmpty())
       {
+        _logger.LogWarning($"Validation failed. User input invalid data.", DateTime.UtcNow);
         return BadRequest();
       }
 
@@ -46,8 +50,11 @@ namespace M183.Controllers
 
       if (user == null)
       {
+        _logger.LogWarning($"User was unauthorized to log in, Credentials wrong.", DateTime.UtcNow);
         return Unauthorized("login failed");
       }
+
+      _logger.LogInformation($"User logged in {user.Username}", DateTime.UtcNow);
       return Ok(CreateJwt(user));
     }
 
@@ -83,6 +90,7 @@ namespace M183.Controllers
         signingCredentials: credentials
         );
 
+      _logger.LogInformation($"JWT issued to {user.Username}", DateTime.UtcNow);
       return new JwtSecurityTokenHandler().WriteToken(token);
     }
   }

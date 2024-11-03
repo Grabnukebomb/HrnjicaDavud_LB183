@@ -4,15 +4,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace M183.Data
 {
-    public class NewsAppContext : DbContext
-    {
-        public NewsAppContext(DbContextOptions<NewsAppContext> options) : base(options) { } 
-        public DbSet<News> News { get; set; }
-        public DbSet<User> Users { get; set; }
+  public class NewsAppContext : DbContext
+  {
+    public NewsAppContext(DbContextOptions<NewsAppContext> options) : base(options) { }
+    public DbSet<News> News { get; set; }
+    public DbSet<User> Users { get; set; }
+    public DbSet<UsersAudit> UsersAudit { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            new NewsAppInitializer(modelBuilder).Seed();
-        }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+      new NewsAppInitializer(modelBuilder).Seed();
     }
+  }
 }

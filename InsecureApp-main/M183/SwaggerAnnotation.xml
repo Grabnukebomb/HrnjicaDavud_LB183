@@ -80,5 +80,17 @@
         <member name="M:M183.Migrations.InitialData.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
+        <member name="T:M183.Migrations.CreatedUsersAudit">
+            <inheritdoc />
+        </member>
+        <member name="M:M183.Migrations.CreatedUsersAudit.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:M183.Migrations.CreatedUsersAudit.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:M183.Migrations.CreatedUsersAudit.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
     </members>
 </doc>
