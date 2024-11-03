@@ -4,6 +4,14 @@
         <name>M183</name>
     </assembly>
     <members>
+        <member name="M:M183.Controllers.AuthController.Enable2FA">
+            <summary>
+            Enable 2FA for user using password and username
+            </summary>
+            <response code="200">Login successfull</response>
+            <response code="400">Bad request</response>
+            <response code="401">Login failed</response>
+        </member>
         <member name="M:M183.Controllers.LoginController.Login(M183.Controllers.Dto.LoginDto)">
             <summary>
             Login a user using password and username
@@ -90,6 +98,30 @@
             <inheritdoc />
         </member>
         <member name="M:M183.Migrations.CreatedUsersAudit.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:M183.Migrations.CreatedTriggerForAudit">
+            <inheritdoc />
+        </member>
+        <member name="M:M183.Migrations.CreatedTriggerForAudit.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:M183.Migrations.CreatedTriggerForAudit.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:M183.Migrations.CreatedTriggerForAudit.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:M183.Migrations.AddSecretKey2FAToUser">
+            <inheritdoc />
+        </member>
+        <member name="M:M183.Migrations.AddSecretKey2FAToUser.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:M183.Migrations.AddSecretKey2FAToUser.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:M183.Migrations.AddSecretKey2FAToUser.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
     </members>
