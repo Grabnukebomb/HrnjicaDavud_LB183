@@ -5,6 +5,8 @@ using M183.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace M183.Controllers
 {
@@ -12,10 +14,12 @@ namespace M183.Controllers
   [ApiController]
   public class LoginController : ControllerBase
   {
+    private readonly IConfiguration _configuration;
     private readonly NewsAppContext _context;
 
-    public LoginController(NewsAppContext context)
+    public LoginController(NewsAppContext context, IConfiguration configuration)
     {
+      _configuration = configuration;
       _context = context;
     }
 
@@ -44,7 +48,42 @@ namespace M183.Controllers
       {
         return Unauthorized("login failed");
       }
-      return Ok(user);
+      return Ok(CreateJwt(user));
+    }
+
+    public string CreateJwt(User user)
+    {
+      string issuer = _configuration.GetSection("Jwt:Issuer").Value;
+      string audience = _configuration.GetSection("Jwt:Audience").Value;
+
+      string userRole = user.IsAdmin ? "admin" : "user";
+
+      List<Claim> claims = new List<Claim>
+      {
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        new Claim(JwtRegisteredClaimNames.UniqueName, user.Username),
+        new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
+        new Claim(ClaimTypes.Role, userRole)
+      };
+
+
+      string base64Key = _configuration.GetSection("Jwt:Key").Value!;
+      SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Convert.FromBase64String(base64Key));
+
+      SigningCredentials credentials = new SigningCredentials(
+              securityKey,
+              SecurityAlgorithms.HmacSha512Signature);
+
+      JwtSecurityToken token = new JwtSecurityToken(
+        issuer: issuer,
+        audience: audience,
+        claims: claims,
+        notBefore: DateTime.Now,
+        expires: DateTime.Now.AddDays(1),
+        signingCredentials: credentials
+        );
+
+      return new JwtSecurityTokenHandler().WriteToken(token);
     }
   }
 }
