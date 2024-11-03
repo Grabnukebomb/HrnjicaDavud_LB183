@@ -54,6 +54,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
